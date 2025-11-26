@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Dino Game</title>
+    <style>
+        canvas {
+            display: block;
+            background: #eee;
+            margin: auto;
+        }
+    </style>
+</head>
+<body>
+
+<h1 style="text-align:center;">Dino Game</h1>
+<canvas id="game" width="600" height="200"></canvas>
+
+<script>
+const canvas = document.getElementById("game");
+const ctx = canvas.getContext("2d");
+
+let dino = { x: 50, y: 150, width: 30, height: 30, speed: 0 };
+let gravity = 0.5;
+let obstacles = [];
+
+document.addEventListener("keydown", () => {
+    if (dino.y >= 150) dino.speed = -10;
+});
+
+function addObstacle() {
+    obstacles.push({
+        x: 600,
+        y: 160,
+        width: 20,
+        height: 40
+    });
+}
+
+function draw() {
+    ctx.clearRect(0, 0, 600, 200);
+
+    ctx.fillStyle = "green";
+    ctx.fillRect(dino.x, dino.y, dino.width, dino.height);
+
+    dino.speed += gravity;
+    dino.y += dino.speed;
+
+    if (dino.y > 150) dino.y = 150;
+
+    if (Math.random() < 0.01) addObstacle();
+
+    for (let ob of obstacles) {
+        ob.x -= 5;
+        ctx.fillStyle = "brown";
+        ctx.fillRect(ob.x, ob.y, ob.width, ob.height);
+
+        if (
+            dino.x < ob.x + ob.width &&
+            dino.x + dino.width > ob.x &&
+            dino.y + dino.height > ob.y
+        ) {
+            alert("Game Over!");
+            document.location.reload();
+        }
+    }
+
+    requestAnimationFrame(draw);
+}
+
+draw();
+</script>
+
+</body>
+</html>
